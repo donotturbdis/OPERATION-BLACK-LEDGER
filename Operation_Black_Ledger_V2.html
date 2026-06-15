@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Operation Black Ledger V2</title>
+<style>
+body{font-family:Arial;background:#111;color:#fff;margin:0}
+.header{padding:15px;background:#222;text-align:center}
+.container{padding:20px}
+.room{display:none}
+.active{display:block}
+button{padding:10px 15px;margin:5px;cursor:pointer}
+.question{background:#222;padding:15px;border-radius:8px;margin:10px 0}
+.panel{background:#1a1a1a;padding:15px;border-radius:8px;margin-top:15px}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #444;padding:8px;text-align:center}
+.scoreBtn{padding:4px 8px}
+#leaderboard li{margin:4px 0}
+#timer{font-size:28px;font-weight:bold}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>OPERATION BLACK LEDGER</h1>
+<div id="timer">30:00</div>
+<button onclick="startTimer()">Start Timer</button>
+<button onclick="pauseTimer()">Pause Timer</button>
+</div>
+
+<div class="container">
+
+<div id="welcome" class="active">
+<h2>Finance Escape Room</h2>
+<p>₹100 Crore has disappeared. 10 teams. 8 rooms. Find the culprit.</p>
+<button onclick="showRoom(1)">START GAME</button>
+</div>
+
+<div id="room1" class="room"><div class="question"><h2>Room 1</h2><p>₹50,000 at 10% for 2 years. Find Simple Interest.</p></div><button onclick="alert('Answer: ₹10,000 | Code: LEDGER')">Reveal Answer</button><button onclick="showRoom(2)">Next Room</button></div>
+
+<div id="room2" class="room"><div class="question"><h2>Room 2</h2><p>Which ticker belongs to Tata Consultancy Services?</p></div><button onclick="alert('Answer: TCS | Code: 7')">Reveal Answer</button><button onclick="showRoom(3)">Next Room</button></div>
+
+<div id="room3" class="room"><div class="question"><h2>Room 3</h2><p>Current Assets ₹40 lakh. Current Liabilities ₹20 lakh. Find Current Ratio.</p></div><button onclick="alert('Answer: 2 | Code: BLACK')">Reveal Answer</button><button onclick="showRoom(4)">Next Room</button></div>
+
+<div id="room4" class="room"><div class="question"><h2>Room 4</h2><p>Identify suspicious expense: Salary 50k, Rent 20k, Electricity 10k, Misc 2.5 lakh.</p></div><button onclick="alert('Answer: Miscellaneous | Code: 9')">Reveal Answer</button><button onclick="showRoom(5)">Next Room</button></div>
+
+<div id="room5" class="room"><div class="question"><h2>Room 5</h2><p>ABC Ltd paid twice ₹5 lakh. Find anomaly.</p></div><button onclick="alert('Answer: Duplicate Payment | Code: VAULT')">Reveal Answer</button><button onclick="showRoom(6)">Next Room</button></div>
+
+<div id="room6" class="room"><div class="question"><h2>Room 6</h2><p>Annual fee charged by mutual fund?</p></div><button onclick="alert('Answer: Expense Ratio | Code: CFO')">Reveal Answer</button><button onclick="showRoom(7)">Next Room</button></div>
+
+<div id="room7" class="room"><div class="question"><h2>Room 7</h2><p>Risk measure relative to market?</p></div><button onclick="alert('Answer: Beta | Code: 4')">Reveal Answer</button><button onclick="showRoom(8)">Next Room</button></div>
+
+<div id="room8" class="room"><div class="question"><h2>Room 8</h2><p>Buying in one market and selling in another for risk-free profit?</p></div><button onclick="alert('Answer: Arbitrage | Code: ESCAPE')">Reveal Answer</button><button onclick="showRoom(9)">Final Vault</button></div>
+
+<div id="room9" class="room"><div class="question"><h2>FINAL VAULT</h2><p>Codes: LEDGER, 7, BLACK, 9, VAULT, CFO, 4, ESCAPE</p><p>Host can decide final mystery answer.</p></div></div>
+
+<div class="panel">
+<h2>Host Scoring Panel</h2>
+<table>
+<tr><th>Team</th><th>Score</th><th>+10</th><th>-5</th></tr>
+<tbody id="scoreTable"></tbody>
+</table>
+</div>
+
+<div class="panel">
+<h2>Live Leaderboard</h2>
+<ol id="leaderboard"></ol>
+</div>
+
+</div>
+
+<script>
+let scores={};
+for(let i=1;i<=10;i++){scores["Team "+i]=0;}
+
+function renderScores(){
+ let rows='';
+ Object.keys(scores).forEach(team=>{
+ rows+=`<tr>
+ <td>${team}</td>
+ <td>${scores[team]}</td>
+ <td><button class="scoreBtn" onclick="addScore('${team}',10)">+10</button></td>
+ <td><button class="scoreBtn" onclick="addScore('${team}',-5)">-5</button></td>
+ </tr>`;
+ });
+ document.getElementById('scoreTable').innerHTML=rows;
+
+ let sorted=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+ let lb='';
+ sorted.forEach(x=> lb+=`<li>${x[0]} - ${x[1]} pts</li>`);
+ document.getElementById('leaderboard').innerHTML=lb;
+}
+
+function addScore(team,pts){
+ scores[team]+=pts;
+ renderScores();
+}
+
+function showRoom(n){
+ document.querySelectorAll('.room,.active').forEach(x=>x.classList.remove('active'));
+ document.getElementById('room'+n)?.classList.add('active');
+}
+
+let t=1800,intv=null;
+function startTimer(){
+ if(intv) return;
+ intv=setInterval(()=>{
+ if(t<=0){clearInterval(intv);alert("TIME UP");return;}
+ t--;
+ let m=Math.floor(t/60),s=t%60;
+ document.getElementById('timer').innerHTML=String(m).padStart(2,'0')+":"+String(s).padStart(2,'0');
+ },1000);
+}
+function pauseTimer(){clearInterval(intv);intv=null;}
+
+renderScores();
+</script>
+
+</body>
+</html>
